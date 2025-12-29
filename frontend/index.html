@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kütüphane Yönetim Sistemi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-card: #111111;
+            --bg-hover: #1a1a1a;
+            --border: #222222;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --accent: #763494;
+            --accent-hover: #5a2773;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* header */
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 24px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .user-info {
+            position: absolute;
+            right: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* butonlar */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* formlar */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* arayüz */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        /* giris kutusu */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at top, #111 0%, #000 100%);
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-box h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .login-box p {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        /* sekme */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-secondary);
+            padding: 4px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* kitap arayüzü */
+        .book-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .book-card:hover {
+            border-color: #763494;
+            transform: translateY(-2px);
+        }
+
+        .book-card h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .book-card .author {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+        }
+
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        /* bildiri */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: rgba(110, 148, 194, 0.15);
+            color: #6e94c2;
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .badge-info {
+            background: rgba(118, 52, 148, 0.15);
+            color: #763494;
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        /* tablo */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        /* uyarı */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+        }
+
+        /* arama */
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .search-bar input {
+            flex: 1;
+        }
+
+        /* istatistik */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-top: 4px;
+        }
+
+        /*  */
+        .hidden {
+            display: none !important;
+        }
+
+        /*  */
+        .mb-2 {
+            margin-bottom: 16px;
+        }
+
+        .mb-3 {
+            margin-bottom: 24px;
+        }
+
+        .text-muted {
+            color: var(--text-secondary);
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        /*  */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                flex: 1 1 calc(50% - 4px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- giris sayfasi -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box card">
+            <div class="logo-icon" style="width:60px;height:60px;font-size:1.5rem;margin:0 auto 20px;">📚</div>
+            <h1>Kütüphane Sistemi</h1>
+            <p id="authTitle">Hesabınıza giriş yapın</p>
+
+            <div class="tabs" style="margin-top:20px;">
+                <div class="tab active" onclick="showAuthForm('login')">Giriş Yap</div>
+                <div class="tab" onclick="showAuthForm('register')">Kayıt Ol</div>
+            </div>
+
+            <div id="loginAlert"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">E-posta</label>
+                    <input type="email" id="loginEmail" class="form-input" placeholder="ornek@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Şifre</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;padding:14px;">Giriş Yap</button>
+            </form>
+
+            <!-- kayit -->
+            <form id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label class="form-label">Ad Soyad</label>
+                    <input type="text" id="registerName" class="form-input" placeholder="Adınız Soyadınız" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">E-posta</label>
+                    <input type="email" id="registerEmail" class="form-input" placeholder="ornek@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Şifre</label>
+                    <input type="password" id="registerPassword" class="form-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;padding:14px;">Kayıt Ol</button>
+            </form>
+
+            <p class="text-sm text-muted" style="margin-top:24px;">
+                Demo: admin@test.com / admintest123
+            </p>
+        </div>
+    </div>
+
+    <!-- ana -->
+    <div id="mainApp" class="hidden">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">📚</div>
+                <span>Kütüphane</span>
+            </div>
+            <div class="user-info">
+                <span id="userName" class="text-sm">Kullanıcı</span>
+                <div class="avatar" id="userAvatar">U</div>
+                <button onclick="logout()" class="btn btn-ghost btn-sm">Çıkış</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <div id="mainAlert"></div>
+
+            <!-- sekmeler -->
+            <div class="tabs">
+                <div class="tab active" onclick="showSection('books')">📚 Kitaplar</div>
+                <div class="tab" onclick="showSection('lendings')">📖 Ödünçlerim</div>
+                <div class="tab admin-only" onclick="showSection('admin')">⚙️ Yönetim</div>
+            </div>
+
+            <!-- kitap bolumu -->
+            <div id="booksSection">
+                <!-- en cok okunan kitaplar -->
+                <div class="card mb-3" style="text-align:center;">
+                    <h3 class="mb-2" style="font-size:1.1rem;">🥇🥈🥉 En Çok Okunan Kitaplar</h3>
+                    <div id="popularBooksList"
+                        style="display:flex;gap:16px;overflow-x:auto;padding:8px 0;justify-content:center;flex-wrap:wrap;">
+                    </div>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" id="searchInput" class="form-input" placeholder="Kitap veya yazar ara...">
+                    <button onclick="loadBooks()" class="btn" style="background:#6e94c2;color:#fff;">Ara</button>
+                </div>
+                <div id="booksList" class="grid"></div>
+            </div>
+
+            <!-- odunc alma bolumu -->
+            <div id="lendingsSection" class="hidden">
+                <div class="card">
+                    <h3 class="mb-2" style="font-size:1.1rem;">📖 Ödünç Aldığım Kitaplar</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Kitap</th>
+                                    <th>Ödünç Tarihi</th>
+                                    <th>İade Tarihi</th>
+                                    <th>Durum</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lendingsList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- admin bolumu -->
+            <div id="adminSection" class="hidden admin-only">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statBooks">0</div>
+                        <div class="stat-label">Kitap</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statUsers">0</div>
+                        <div class="stat-label">Kullanıcı</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statLendings">0</div>
+                        <div class="stat-label">Aktif Ödünç</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statOverdue">0</div>
+                        <div class="stat-label">Gecikmiş</div>
+                    </div>
+                </div>
+
+                <!-- kitap ekle  -->
+                <div class="card mb-3">
+                    <h3 class="mb-2" style="font-size:1.1rem;">➕ Yeni Kitap Ekle</h3>
+                    <form id="addBookForm" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+                        <div class="form-group" style="margin:0;">
+                            <label class="form-label">Kitap Adı</label>
+                            <input type="text" name="title" class="form-input" required>
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label class="form-label">Yazar</label>
+                            <input type="text" name="author" class="form-input" required>
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label class="form-label">Kategori</label>
+                            <input type="text" name="category" class="form-input" required>
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label class="form-label">Adet</label>
+                            <input type="number" name="quantity" class="form-input" value="1" min="1">
+                        </div>
+                        <div class="form-group" style="margin:0;display:flex;align-items:flex-end;">
+                            <button type="submit" class="btn" style="width:100%;background:#6e94c2;color:#fff;">Kitap
+                                Ekle</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!--  ana odunc -->
+                <div class="card">
+                    <h3 class="mb-2" style="font-size:1.1rem;">📋 Son Ödünçler</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kullanıcı</th>
+                                    <th>Kitap</th>
+                                    <th>Tarih</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allLendingsList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:5000/api';
+        let token = localStorage.getItem('token');
+        let user = JSON.parse(localStorage.getItem('user') || 'null');
+
+        if (token && user) showApp();
+
+        // yetkilendirme
+        document.getElementById('loginForm').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch(`${API}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: document.getElementById('loginEmail').value,
+                        password: document.getElementById('loginPassword').value
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+
+                token = data.token;
+                user = data.user;
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(user));
+                showApp();
+            } catch (err) {
+                showAlert('loginAlert', err.message, 'error');
+            }
+        };
+
+        function logout() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        // timeout
+        const INACTIVITY_TIMEOUT = 3 * 60 * 1000;  // 3 dakika hareketsizlik
+        let lastActivity = Date.now();
+        let inactivityTimer = null;
+
+        function resetActivityTimer() {
+            lastActivity = Date.now();
+        }
+
+        function checkInactivity() {
+            if (Date.now() - lastActivity > INACTIVITY_TIMEOUT) {
+                alert('Hareketsizlik nedeniyle oturumunuz sonlandırıldı.');
+                logout();
+            }
+        }
+
+        function startInactivityCheck() {
+            ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(event => {
+                document.addEventListener(event, resetActivityTimer);
+            });
+
+            inactivityTimer = setInterval(checkInactivity, 60 * 1000);
+        }
+
+        function showAuthForm(type) {
+            const tabs = document.querySelectorAll('#loginPage .tabs .tab');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const authTitle = document.getElementById('authTitle');
+
+            tabs.forEach((tab, i) => {
+                tab.classList.toggle('active', (type === 'login' && i === 0) || (type === 'register' && i === 1));
+            });
+
+            if (type === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                authTitle.textContent = 'Hesabınıza giriş yapın';
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                authTitle.textContent = 'Yeni hesap oluşturun';
+            }
+            document.getElementById('loginAlert').innerHTML = '';
+        }
+
+        // kayıt
+        document.getElementById('registerForm').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch(`${API}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('registerName').value,
+                        email: document.getElementById('registerEmail').value,
+                        password: document.getElementById('registerPassword').value
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+
+                showAlert('loginAlert', 'Kayıt başarılı! Şimdi giriş yapabilirsiniz.', 'success');
+                showAuthForm('login');
+            } catch (err) {
+                showAlert('loginAlert', err.message, 'error');
+            }
+        };
+
+        function showApp() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userAvatar').textContent = user.name.charAt(0);
+
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = user.role === 'admin' ? '' : 'none';
+            });
+
+            startInactivityCheck();
+            loadBooks();
+            loadPopularBooks();
+        }
+
+        function showSection(name) {
+            document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            ['booksSection', 'lendingsSection', 'adminSection'].forEach(s =>
+                document.getElementById(s).classList.add('hidden')
+            );
+            document.getElementById(name + 'Section').classList.remove('hidden');
+
+            if (name === 'books') { loadBooks(); loadPopularBooks(); }
+            if (name === 'lendings') loadMyLendings();
+            if (name === 'admin') loadAdminData();
+        }
+
+        // kitap
+        async function loadBooks() {
+            const search = document.getElementById('searchInput').value;
+            const res = await fetch(`${API}/books?search=${search}`);
+            const data = await res.json();
+
+            document.getElementById('booksList').innerHTML = data.books.map(book => `
+                <div class="book-card">
+                    <h3>${book.title}</h3>
+                    <p class="author">${book.author}</p>
+                    <div class="book-meta">
+                        <span class="badge badge-info">${book.category}</span>
+                        <span class="badge ${book.is_available ? 'badge-success' : 'badge-danger'}">
+                            ${book.is_available ? book.available + ' adet' : 'Tükendi'}
+                        </span>
+                    </div>
+                    ${book.is_available ?
+                    `<button onclick="borrowBook(${book.id})" class="btn btn-primary btn-sm" style="width:100%">Ödünç Al</button>` :
+                    `<button disabled class="btn btn-ghost btn-sm" style="width:100%;opacity:0.5">Stokta Yok</button>`
+                }
+                </div>
+            `).join('') || '<p class="text-muted">Kitap bulunamadı.</p>';
+
+            loadPopularBooks();
+        }
+
+        async function loadPopularBooks() {
+            const res = await fetch(`${API}/books/popular`);
+            const data = await res.json();
+
+            document.getElementById('popularBooksList').innerHTML = data.books.map((item, i) => `
+                <div style="min-width:180px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
+                    <div style="font-size:1.5rem;margin-bottom:8px;">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '📖'}</div>
+                    <div style="font-weight:600;font-size:0.9rem;margin-bottom:4px;">${item.book.title}</div>
+                    <div style="color:var(--text-secondary);font-size:0.8rem;">${item.book.author}</div>
+                    <div style="margin-top:8px;"><span class="badge badge-info">${item.borrow_count} kez okundu</span></div>
+                </div>
+            `).join('') || '<p class="text-muted">Henüz veri yok</p>';
+        }
+
+        async function borrowBook(id) {
+            if (!confirm('Bu kitabı ödünç almak istiyor musunuz?')) return;
+            try {
+                const res = await fetch(`${API}/borrow/${id}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+                showAlert('mainAlert', 'Kitap ödünç alındı!', 'success');
+                loadBooks();
+            } catch (err) {
+                showAlert('mainAlert', err.message, 'error');
+            }
+        }
+
+        // odunc
+        async function loadMyLendings() {
+            const res = await fetch(`${API}/my-lendings`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+
+            document.getElementById('lendingsList').innerHTML = data.lendings.map(l => `
+                <tr>
+                    <td><strong>#${l.id}</strong></td>
+                    <td>
+                        <strong>${l.book.title}</strong>
+                        <br><span class="text-sm text-muted">${l.book.author}</span>
+                    </td>
+                    <td>${new Date(l.borrow_date).toLocaleDateString('tr')}</td>
+                    <td>${l.returned ? new Date(l.return_date).toLocaleDateString('tr') : new Date(l.due_date).toLocaleDateString('tr')}</td>
+                    <td>
+                        ${l.returned ? '<span class="badge badge-success">İade Edildi</span>' :
+                    l.is_overdue ? `<span class="badge badge-danger">Gecikmiş (${l.days_overdue} gün)</span>` :
+                        '<span class="badge badge-info">Aktif</span>'}
+                    </td>
+                    <td>
+                        ${!l.returned ? `<button onclick="returnBook(${l.id})" class="btn btn-success btn-sm">İade Et</button>` : '-'}
+                    </td>
+                </tr>
+            `).join('') || '<tr><td colspan="6" class="text-muted">Kayıt yok</td></tr>';
+        }
+
+        async function returnBook(id) {
+            if (!confirm('Kitabı iade etmek istiyor musunuz?')) return;
+            try {
+                const res = await fetch(`${API}/return/${id}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+
+                let msg = 'Kitap iade edildi!';
+                if (data.fine) msg += ` Ceza: ${data.fine.amount} TL`;
+                showAlert('mainAlert', msg, 'success');
+                loadMyLendings();
+            } catch (err) {
+                showAlert('mainAlert', err.message, 'error');
+            }
+        }
+
+        // Admin
+        async function loadAdminData() {
+            const [books, users, lendings] = await Promise.all([
+                fetch(`${API}/books`).then(r => r.json()),
+                fetch(`${API}/users`, { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json()),
+                fetch(`${API}/all-lendings`, { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json())
+            ]);
+
+            const active = lendings.lendings.filter(l => !l.returned);
+            const overdue = lendings.lendings.filter(l => !l.returned && l.is_overdue);
+
+            document.getElementById('statBooks').textContent = books.books.length;
+            document.getElementById('statUsers').textContent = users.users.length;
+            document.getElementById('statLendings').textContent = active.length;
+            document.getElementById('statOverdue').textContent = overdue.length;
+
+            document.getElementById('allLendingsList').innerHTML = lendings.lendings.slice(0, 10).map(l => `
+                <tr>
+                    <td>${l.user.name}</td>
+                    <td>${l.book.title}</td>
+                    <td>${new Date(l.borrow_date).toLocaleDateString('tr')}</td>
+                    <td>
+                        ${l.returned ? '<span class="badge badge-success">İade</span>' :
+                    l.is_overdue ? '<span class="badge badge-danger">Gecikmiş</span>' :
+                        '<span class="badge badge-info">Aktif</span>'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('addBookForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const form = new FormData(e.target);
+            try {
+                const res = await fetch(`${API}/books`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({
+                        title: form.get('title'),
+                        author: form.get('author'),
+                        category: form.get('category'),
+                        quantity: parseInt(form.get('quantity'))
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+                showAlert('mainAlert', 'Kitap eklendi!', 'success');
+                e.target.reset();
+                loadAdminData();
+            } catch (err) {
+                showAlert('mainAlert', err.message, 'error');
+            }
+        };
+
+        function showAlert(id, msg, type) {
+            document.getElementById(id).innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+            setTimeout(() => document.getElementById(id).innerHTML = '', 4000);
+        }
+
+        document.getElementById('searchInput').onkeyup = e => { if (e.key === 'Enter') loadBooks(); };
+    </script>
+</body>
+
+</html>
